@@ -1,3 +1,7 @@
-hellooo
-hellooo
-wa safi helloooo
+    WIDTH       =  99  
+#hillw  
+HEIGHT= 100    
+ENTRY=10,10,10     
+    EXIT    =   19,14        
+OUTPUT_FILE=maze.txt
+PERFECT  = True  
