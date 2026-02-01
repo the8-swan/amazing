@@ -20,7 +20,7 @@ def data_validation(data_dict: dict):
     if ((data_dict['WIDTH'].isdigit()) is False):
         raise ErrorInConfigFile(f"Invalid WIDTH: {data_dict['WIDTH']}."
                                 " WIDTH must be a number greater than 0.")
-    if ((data_dict['HEIGHT'].isdigit()) if False):
+    if ((data_dict['HEIGHT'].isdigit()) is False):
         raise ErrorInConfigFile(f"Invalid HEIGHT: {data_dict['HEIGHT']}."
                                 " HEIGHT must be a number greater than 0.")
         
