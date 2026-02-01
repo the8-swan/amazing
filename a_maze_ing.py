@@ -1,5 +1,6 @@
 import sys
 import config_validation
+import maze_renderer
 
 """"
 Your program must handle all errors gracefully: invalid configuration,
@@ -20,7 +21,7 @@ def main():
             with open(sys.argv[1], 'r') as file:
                 content = file.read()
                 data = config_validation.validation(content)
-                print(data)
+                maze_renderer.maze_draw(data)
         except (FileNotFoundError, config_validation.ErrorInConfigFile) as e:
             print(e)
 

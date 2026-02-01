@@ -1,7 +1,7 @@
-    WIDTH       =  99  
+    WIDTH       = 20  
 #hillw  
-HEIGHT= 100    
-ENTRY=10,10,10     
-    EXIT    =   19,14        
+HEIGHT= 10   
+ENTRY=5,5     
+    EXIT    =   6,4        
 OUTPUT_FILE=maze.txt
 PERFECT  = True  

@@ -1,5 +1,6 @@
 import ctypes
 import struct
+from math import sqrt
 
 
 """
@@ -93,12 +94,24 @@ class Minilibx:
             self.addr[pixel_index + 3] = (color >> 24) & 0xFF   # Alpha
 
 
-mlx = Minilibx("./libmlx.so")
-window = mlx.create_window(800, 800, "hillow")
-img_ptr = mlx.create_image(150, 150)
-image_addr = mlx.get_image_data(img_ptr)
-image_addr.put_pixel_fast(100, 100, 0xFF0000)
-mlx.put_image_to_window(window, img_ptr, 50, 50)
+def maze_draw(data):
+    win_x_dimention = 800
+    win_y_dimention = 800
+    cell_size_p = 30
+
+    mlx = Minilibx("./libmlx.so")
+    window = mlx.create_window(win_x_dimention, win_y_dimention, "hillow")
+    img_ptr = mlx.create_image(win_x_dimention, win_y_dimention)
+    image_addr = mlx.get_image_data(img_ptr)
+
+    startx = int(( win_x_dimention - (data['WIDTH'] * cell_size_p)) / 2)
+    starty = int(( win_y_dimention - (data['HEIGHT'] * cell_size_p)) / 2)
+    color = 0xFFFFFF
+    for y in range(starty, (data['HEIGHT'] * cell_size_p)):
+        for x in range(startx, (data['WIDTH'] * cell_size_p)):
+            image_addr.put_pixel_fast(x, y, color)
+    mlx.put_image_to_window(window, img_ptr, 0, 0)
+    mlx.loop()
 # print(image_addr)
 # print(type(image))
-mlx.loop()
+
