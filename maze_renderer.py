@@ -106,9 +106,16 @@ def maze_draw(data):
 
     startx = int(( win_x_dimention - (data['WIDTH'] * cell_size_p)) / 2)
     starty = int(( win_y_dimention - (data['HEIGHT'] * cell_size_p)) / 2)
+
+    endx = int(startx + 1 + (data['WIDTH'] * cell_size_p))
+    endy = int(starty + 1 + (data['HEIGHT'] * cell_size_p))
     color = 0xFFFFFF
-    for y in range(starty, (data['HEIGHT'] * cell_size_p)):
-        for x in range(startx, (data['WIDTH'] * cell_size_p)):
+    for y in range(starty, endy, cell_size_p):
+        for x in range(startx, endx):
+            image_addr.put_pixel_fast(x, y, color)
+
+    for x in range(startx, endx, cell_size_p):
+        for y in range(starty, endy):
             image_addr.put_pixel_fast(x, y, color)
     mlx.put_image_to_window(window, img_ptr, 0, 0)
     mlx.loop()

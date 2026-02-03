@@ -1,5 +1,6 @@
 import sys
 import config_validation
+import maze
 import maze_renderer
 
 """"
