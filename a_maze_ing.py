@@ -1,6 +1,6 @@
 import sys
 import config_validation
-import maze
+from maze import Maze
 import maze_renderer
 
 """"
@@ -22,7 +22,13 @@ def main():
             with open(sys.argv[1], 'r') as file:
                 content = file.read()
                 data = config_validation.validation(content)
-                maze_renderer.maze_draw(data)
+                x, y = data["ENTRY"]
+                maze = Maze(data)
+                maze.dsf_algorith(x, y)
+                for col in range(25):
+                    for row in range(25):
+                        print(f"{maze.cells[col][row].is_visited}",end=" ")
+                    print("")
         except (FileNotFoundError, config_validation.ErrorInConfigFile) as e:
             print(e)
 

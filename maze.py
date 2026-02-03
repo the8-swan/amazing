@@ -1,8 +1,12 @@
+import random
+
 class Maze:
-	def __init__(self, width, height, cell_size):
-		self.width = width
-		self.height = height
-		self.cell_size = cell_size
+	def __init__(self, data: dict):
+		self.width = data['WIDTH']
+		self.height = data['HEIGHT']
+		self.entry = data['ENTRY']
+		self.exit = data['EXIT']
+		self.cell_size = 20
 		# cells[row][col]
 		self.cells = self.create_cells(self.width, self.height)
 	
@@ -11,11 +15,11 @@ class Maze:
 			self.row = row
 			self.column = column
 			self.walls = {
-				"left":True,
-				"right":True,
-				"top":True,
-				"bottom":True
-			}
+                "S": True,
+                "N": True,
+                "W": True,
+                "E": True
+            }
 			self.is_visited = False
 			
 	def create_cells(self, width, height):
@@ -27,13 +31,34 @@ class Maze:
 			cells.append(row_data)
 		return cells
 
-	def dsf_algorith(self):
-		self.cells[0][0].
-		direction = [(0, -1), (0, 1), (1, 0), (-1, 0)]
-
-mymaze = Maze(20, 20, 30)
-for col in range(20):
-	for row in range(20):
-		print(f"{row}",end=" ")
-	print("")
-# print(mymaze.cells)
+	def dsf_algorith(self, x, y):
+		self.cells[x][y].is_visited = True
+		final_x, final_y = self.exit
+		if(x == final_x and y == final_y):
+						return True
+		directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]
+		random.shuffle(directions)
+		i = 0
+		while i < 4:
+			dx, dy = directions[i]
+			nx, ny = x + dx, y + dy
+			if nx >= 0 and ny >= 0 and nx < self.width and ny < self.height:
+				if self.cells[nx][ny].is_visited is False:
+					if dx == 0 and dy != 0:
+						if dy == 1 :
+							self.cells[x][y].walls["W"] = False
+							self.cells[nx][ny].walls["E"] = False
+						if dy == -1 :
+							self.cells[x][y].walls["E"] = False
+							self.cells[nx][ny].walls["W"] = False
+					else :
+						if dx == 1 :
+							self.cells[x][y].walls["S"] = False
+							self.cells[nx][ny].walls["N"] = False
+						if dy == -1 :
+							self.cells[x][y].walls["N"] = False
+							self.cells[nx][ny].walls["S"] = False
+					if self.dsf_algorith(nx, ny):
+						return True
+			i += 1
+		return False
