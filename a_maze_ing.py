@@ -19,16 +19,17 @@ def main():
         print("You forgot to mention the config file !!")
     else:
         try:
-            with open(sys.argv[1], 'r') as file:
+            with open(sys.argv[1], "r") as file:
                 content = file.read()
                 data = config_validation.validation(content)
                 x, y = data["ENTRY"]
                 maze = Maze(data)
                 maze.dsf_algorith(x, y)
-                for col in range(25):
-                    for row in range(25):
-                        print(f"{maze.cells[col][row].is_visited}",end=" ")
-                    print("")
+                # for col in range(25):
+                #     for row in range(25):
+                #         print(f"{maze.cells[col][row].is_visited}", end=" ")
+                #     print("")
+                maze_renderer.maze_draw(maze)
         except (FileNotFoundError, config_validation.ErrorInConfigFile) as e:
             print(e)
 
