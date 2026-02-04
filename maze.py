@@ -39,18 +39,18 @@ class Maze:
                 if self.cells[ny][nx].is_visited is False:
                     if dx == 0 and dy != 0:
                         if dy == 1:
-                            self.cells[y][x].walls["W"] = False
-                            self.cells[ny][nx].walls["E"] = False
-                        if dy == -1:
-                            self.cells[y][x].walls["E"] = False
-                            self.cells[ny][nx].walls["W"] = False
-                    else:
-                        if dx == 1:
                             self.cells[y][x].walls["S"] = False
                             self.cells[ny][nx].walls["N"] = False
                         if dy == -1:
                             self.cells[y][x].walls["N"] = False
                             self.cells[ny][nx].walls["S"] = False
+                    else:
+                        if dx == 1:
+                            self.cells[y][x].walls["E"] = False
+                            self.cells[ny][nx].walls["W"] = False
+                        if dy == -1:
+                            self.cells[y][x].walls["W"] = False
+                            self.cells[ny][nx].walls["E"] = False
                     if self.dsf_algorith(nx, ny):
                         return True
             i += 1

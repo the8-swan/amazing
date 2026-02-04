@@ -150,9 +150,9 @@ def maze_draw(maze):
     imagey = maze.height * maze.cell_size
     img_ptr = mlx.create_image(imagex, imagey)
     image_addr = mlx.get_image_data(img_ptr)
-    image_addr.set_color_to_image(imagex, imagey, 0xC8A2C8)
+    image_addr.set_color_to_image(imagex, imagey, 0x000000)
 
-    color = 0x000000
+    color = 0xC8A2C8
     # draw rows
     for y in range(0, maze.height * maze.cell_size, maze.cell_size):
         yn = int(y / maze.cell_size)
@@ -161,12 +161,13 @@ def maze_draw(maze):
                 for i in range(
                     x * maze.cell_size, (x * maze.cell_size) + maze.cell_size
                 ):
-                    for j in range(7):
+                    for j in range(1):
                         image_addr.put_pixel_fast(i, y + j, color)
     for x in range(0, maze.width):
-        if maze.cells[maze.height - 1][x].walls["S"] is True:
+        if maze.cells[maze.height- 1][x].walls["S"] is True:
+            print(f"{maze.cells[maze.height- 1][x]}")
             for i in range(x * maze.cell_size, (x * maze.cell_size) + maze.cell_size):
-                for j in range(7):
+                for j in range(1):
                     image_addr.put_pixel_fast(
                         i, (maze.height * maze.cell_size) + j, color
                     )
@@ -178,12 +179,12 @@ def maze_draw(maze):
                 for i in range(
                     y * maze.cell_size, (y * maze.cell_size) + maze.cell_size
                 ):
-                    for j in range(7):
+                    for j in range(1):
                         image_addr.put_pixel_fast(x + j, i, color)
     for y in range(0, maze.height):
         if maze.cells[y][maze.width - 1].walls["E"] is True:
             for i in range(y * maze.cell_size, (y * maze.cell_size) + maze.cell_size):
-                for j in range(7):
+                for j in range(1):
                     image_addr.put_pixel_fast(
                         (maze.width * maze.cell_size) + j, i, color
                     )
@@ -192,8 +193,8 @@ def maze_draw(maze):
     mlx.put_image_to_window(window, img_ptr, startx, starty)
     mouse_img, w, h = mlx.load_file_to_image("mouse.xpm")
     cheese_img, w2, h2 = mlx.load_file_to_image("cheese.xpm")
-    mlx.put_image_to_window(window, mouse_img, (maze.entry[0] * maze.cell_size)+7, (maze.entry[1]*maze.cell_size)+7)
-    mlx.put_image_to_window(window, cheese_img, (maze.exit[0] * maze.cell_size)+7, (maze.exit[1] * maze.cell_size)+7)
+    mlx.put_image_to_window(window, mouse_img, (maze.entry[0] * maze.cell_size)+( maze.cell_size+1), (maze.entry[1]*maze.cell_size)+( maze.cell_size+1))
+    mlx.put_image_to_window(window, cheese_img, (maze.exit[0] * maze.cell_size)+( maze.cell_size+1), (maze.exit[1] * maze.cell_size)+( maze.cell_size+1))
 
 
     mlx.loop()
