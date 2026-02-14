@@ -4,11 +4,12 @@ from config_validation import ErrorInConfigFile
 
 class Maze:
     direction = {
-    "N" : (0, -1, "N", "S"),
-    "S" : (0, +1, "S", "N"),
-    "W" : (-1, 0, "W", "E"),
-    "E" : (+1, 0, "E", "W"),
+        "N": (0, -1, "N", "S"),
+        "S": (0, +1, "S", "N"),
+        "W": (-1, 0, "W", "E"),
+        "E": (+1, 0, "E", "W"),
     }
+
     def __init__(self, data: dict):
         self.width = data["WIDTH"]
         self.height = data["HEIGHT"]
@@ -18,7 +19,6 @@ class Maze:
         self.wall_size = self.celc_wall_size()
         # cells[row][col]
         self.cells = self.create_cells(self.width, self.height)
-        
 
     class Cell:
         def __init__(self, row, column):
@@ -36,22 +36,21 @@ class Maze:
             cells.append(row_data)
         return cells
 
-    def celc_wall_size(self) ->  int:
-        if self.cell_size <= 10 :
+    def celc_wall_size(self) -> int:
+        if self.cell_size <= 10:
             return 1
         return 2
 
-
     def calc_cell_size(self) -> int:
         cell_size = 25
-        while(cell_size*self.width >= 800):
+        while cell_size * self.width >= 800:
             cell_size -= 1
-            if(cell_size == 0):
+            if cell_size == 0:
                 raise ErrorInConfigFile("cell_size <0")
-        while(cell_size*self.height >= 800):
+        while cell_size * self.height >= 800:
             cell_size -= 1
-            if(cell_size == 0):
-               raise ErrorInConfigFile("cell_size <0")
+            if cell_size == 0:
+                raise ErrorInConfigFile("cell_size <0")
         return cell_size
 
     def my_42(self):
@@ -59,15 +58,15 @@ class Maze:
         if self.cell_size <= 10:
             cells = 6
         w = int(self.width / 2)
-        h = int((self.height / 2)- (cells/2))
+        h = int((self.height / 2) - (cells / 2))
         for i in range(1, 4 * cells):
             for j in range(cells):
-                self.cells[h+j][w-i].is_visited = "True"
-                self.cells[h+j][w+i].is_visited = "True"
+                self.cells[h + j][w - i].is_visited = "True"
+                self.cells[h + j][w + i].is_visited = "True"
         for i in range(1, cells):
-            for j in range(1,4*cells):
-                self.cells[(h+cells)+j][w-i].is_visited = "True"
-                self.cells[(h+cells)+j][w+i].is_visited = "True"
+            for j in range(1, 4 * cells):
+                self.cells[(h + cells) + j][w - i].is_visited = "True"
+                self.cells[(h + cells) + j][w + i].is_visited = "True"
 
     def dsf_algorith(self, x, y):
         """Iterative depth-first search to avoid recursion limit."""
