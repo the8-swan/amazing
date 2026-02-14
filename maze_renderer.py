@@ -46,51 +46,50 @@ def maze_draw(maze):
     image = img_data(addr, bpp, size_line, endian)
     image_btn = img_data(addr_btn, bpp_btn, size_line_btn, endian_btn)
 
-    image.set_color_to_image(800, 800, 0x000000)
-    image_btn.set_color_to_image(800, 400, 0xFFFFFF)
+    image.set_color_to_image(800, 800, 0x0E1C36)
+    image_btn.set_color_to_image(800, 400, 0x0E1C36)
 
-    color = 0xFFFF00
-    # draw rows
-    for y in range(0, maze.height * maze.cell_size, maze.cell_size):
-        yn = int(y / maze.cell_size)
+    color = 0xD7F9FF
+    startx = int((800 - (maze.width * maze.cell_size)) / 2)
+    starty = int((800 - (maze.height * maze.cell_size)) / 2)
+    #draw
+    for y in range(starty, (maze.height * maze.cell_size)+starty, maze.cell_size):
+        yn = int((y - starty) / maze.cell_size)
         for x in range(0, maze.width):
             if maze.cells[yn][x].walls["N"] is True:
                 for i in range(
-                    x * maze.cell_size, (x * maze.cell_size) + maze.cell_size
+                    startx+(x * maze.cell_size),  startx+(x * maze.cell_size) + maze.cell_size
                 ):
-                    for j in range(2):
+                    for j in range(maze.wall_size):
                         image.put_pixel_fast(i, y + j, color)
     for x in range(0, maze.width):
-
-            for i in range(x * maze.cell_size, (x * maze.cell_size) + maze.cell_size):
-                for j in range(2):
-                    image.put_pixel_fast(
-                        i, (maze.height * maze.cell_size) + j, color
-                    )
-    # draw column
-    for x in range(0, maze.width * maze.cell_size, maze.cell_size):
-        xn = int(x / maze.cell_size)
+             for i in range(startx+(x * maze.cell_size),  startx+(x * maze.cell_size) + maze.cell_size):
+                 for j in range(2):
+                     image.put_pixel_fast(
+                         i, starty+(maze.height * maze.cell_size) + j, color
+                     )
+    # # draw column
+    for x in range(startx, (maze.width * maze.cell_size)+startx, maze.cell_size):
+        xn = int((x - startx) / maze.cell_size)
         for y in range(0, maze.height):
             if maze.cells[y][xn].walls["W"] is True:
                 for i in range(
-                    y * maze.cell_size, (y * maze.cell_size) + maze.cell_size
+                    starty+(y * maze.cell_size), (y * maze.cell_size)+starty + maze.cell_size
                 ):
-                    for j in range(2):
+                    for j in range(maze.wall_size):
                         image.put_pixel_fast(x + j, i, color)
     for y in range(0, maze.height):
         if maze.cells[y][maze.width - 1].walls["E"] is True:
-            for i in range(y * maze.cell_size, (y * maze.cell_size) + maze.cell_size):
+            for i in range(starty+(y * maze.cell_size), (y * maze.cell_size)+starty + maze.cell_size):
                 for j in range(2):
                     image.put_pixel_fast(
-                        (maze.width * maze.cell_size) + j, i, color
+                        startx+(maze.width * maze.cell_size) + j, i, color
                     )
     def destroy_win(param):
         mlx_p.mlx_destroy_window(mlx_ptr, window)
         mlx_p.mlx_loop_exit(mlx_ptr)
     
-    startx = int((800 - (maze.width * maze.cell_size)) / 2)
-    starty = int((800 - (maze.height * maze.cell_size)) / 2)
-    mlx_p.mlx_put_image_to_window(mlx_ptr, window, img_maze_ptr, startx, starty)
+    mlx_p.mlx_put_image_to_window(mlx_ptr, window, img_maze_ptr, 0, 0)
     mlx_p.mlx_put_image_to_window(mlx_ptr, window, img_btn_ptr, 800, 0)
     mlx_p.mlx_hook(window, 33, 0, destroy_win, None)
     mlx_p.mlx_loop(mlx_ptr)

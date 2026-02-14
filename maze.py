@@ -15,6 +15,7 @@ class Maze:
         self.entry = data["ENTRY"]
         self.exit = data["EXIT"]
         self.cell_size = self.calc_cell_size()
+        self.wall_size = self.celc_wall_size()
         # cells[row][col]
         self.cells = self.create_cells(self.width, self.height)
         
@@ -35,6 +36,12 @@ class Maze:
             cells.append(row_data)
         return cells
 
+    def celc_wall_size(self) ->  int:
+        if self.cell_size <= 10 :
+            return 1
+        return 2
+
+
     def calc_cell_size(self) -> int:
         cell_size = 25
         while(cell_size*self.width >= 800):
@@ -48,53 +55,20 @@ class Maze:
         return cell_size
 
     def my_42(self):
+        cells = 1
+        if self.cell_size <= 10:
+            cells = 6
         w = int(self.width / 2)
-        h = int(self.height / 2)
-        i = 0
-        while i < 8:
-            self.cells[(h + 2) - i][w - 2].is_visited = True
-            i += 1
-        i = 0
-        while i < 4:
-            self.cells[h][(w - 3) - i].is_visited = True
-            self.cells[(h - 2) + i][w - 4].is_visited = True
-            i += 1
-        self.cells[h - 1][w + 2].is_visited = True
-        self.cells[h + 1][w].is_visited = True
-        i = 0
-        while i < 6:
-            self.cells[h - 2][w + i].is_visited = True
-            self.cells[h + 2][w + i].is_visited = True
-            self.cells[h][w + i].is_visited = True
-            i += 1  boli
-    # def dsf_algorith(self, x, y):
-    #     self.cells[y][x].is_visited = True
-    #     directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]
-    #     random.shuffle(directions)
-    #     i = 0
-    #     while i < 4:
-    #         dx, dy = directions[i]
-    #         nx, ny = x + dx, y + dy
-    #         if nx >= 0 and ny >= 0 and nx < self.width and ny < self.height:
-    #             if self.cells[ny][nx].is_visited is False:
-    #                 if dx == 0 and dy != 0:
-    #                     if dy == 1:
-    #                         self.cells[y][x].walls["S"] = False
-    #                         self.cells[ny][nx].walls["N"] = False
-    #                     if dy == -1:
-    #                         self.cells[y][x].walls["N"] = False
-    #                         self.cells[ny][nx].walls["S"] = False
-    #                 else:
-    #                     if dx == 1:
-    #                         self.cells[y][x].walls["E"] = False
-    #                         self.cells[ny][nx].walls["W"] = False
-    #                     if dy == -1:
-    #                         self.cells[y][x].walls["W"] = False
-    #                         self.cells[ny][nx].walls["E"] = False
-    #                 if self.dsf_algorith(nx, ny):
-    #                     return True
-    #         i += 1
-    #     return False
+        h = int((self.height / 2)- (cells/2))
+        for i in range(1, 4 * cells):
+            for j in range(cells):
+                self.cells[h+j][w-i].is_visited = "True"
+                self.cells[h+j][w+i].is_visited = "True"
+        for i in range(1, cells):
+            for j in range(1,4*cells):
+                self.cells[(h+cells)+j][w-i].is_visited = "True"
+                self.cells[(h+cells)+j][w+i].is_visited = "True"
+
     def dsf_algorith(self, x, y):
         """Iterative depth-first search to avoid recursion limit."""
         # Use a stack instead of recursion
