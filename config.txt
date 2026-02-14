@@ -1,6 +1,6 @@
-    WIDTH       = 15  
+    WIDTH       = 150
 #hillw  
-HEIGHT= 15
+HEIGHT= 150
 ENTRY=0,0     
     EXIT    =   13,13        
 OUTPUT_FILE=maze.txt

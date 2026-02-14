@@ -2,6 +2,18 @@ import ctypes
 import struct
 from math import sqrt
 
+"""
+# C Type          →  Python ctypes
+# -----------------------------------
+# void*           →  ctypes.c_void_p
+# int             →  ctypes.c_int
+# char*           →  ctypes.c_char_p
+# unsigned int    →  ctypes.c_uint
+name_of_the_function.argtypes = [] -------
+return value name_of_the_function.restype = return
+"""
+
+
 class Minilibx:
     def __init__(self, lib_url):
         self.mlx = ctypes.CDLL(lib_url)
@@ -32,17 +44,6 @@ class Minilibx:
 
         self.mlx.mlx_new_image.restype = ctypes.c_void_p
         return self.mlx.mlx_new_image(self.mlx_ptr, width, height)
-	
-	def loop_hook(self, function):
-		FUNCTION = ctypes.CFUNCTYPE(ctypes.c_int)
-		a_function = FUNCTION(function)
-		self.mlx.mlx_loop_hook=[
-			ctypes.c_void_p,
-			FUNCTION,
-			ctypes.c_void_p,
-		]
-		self.mlx.mlx_loop_hook = ctypes.c_int
-		self.mlx.mlx_loop_hook(self.mlx_ptr, a_function, None)
 
     def mlx_hook(self, window, event: int, callback):
         CALLBACK = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_void_p)
@@ -131,24 +132,69 @@ class Minilibx:
             self.addr[pixel_index + 2] = (color >> 16) & 0xFF  # Red
             self.addr[pixel_index + 3] = (color >> 24) & 0xFF  # Alpha
 
-def drawing_image(position:tuple):
-	x,y = tuple
-		for _ in range(x):
-			 image_addr.put_pixel_fast(x, y, 0xFFFFFF)
 
-def animation():
-	mlx = Minilibx("./libmlx.so")
-	window = mlx.create_window(1000, 1000, "animation")
-	image = mlx.create_image(1000, 1000)
-	image_addr = mlx.get_image_data(image)
-	position = (0,0)
-	image_width = (1000,1000)
+def maze_draw(maze):
+    win_x_dimention = 1000
+    win_y_dimention = 1000
 
-	#image_addr.set_color_to_image(1000, 1000, 0xFFFFFF)
+    def on_destroy(param):
+        mlx.destroy_window(window)
+        exit(0)
+        return 0
+
+    mlx = Minilibx("./libmlx.so")
+    window = mlx.create_window(win_x_dimention, win_y_dimention, "hillow")
+    mlx.mlx_hook(window, 17, on_destroy)
+
+    imagex = (maze.width+1) * maze.cell_size
+    imagey = (maze.height+1) * maze.cell_size
+    img_ptr = mlx.create_image(imagex, imagey)
+    image_addr = mlx.get_image_data(img_ptr)
+    image_addr.set_color_to_image(imagex, imagey, 0x000000)
+
+    color = 0xFFFF00
+    # draw rows
+    for y in range(0, maze.height * maze.cell_size, maze.cell_size):
+        yn = int(y / maze.cell_size)
+        for x in range(0, maze.width):
+            if maze.cells[yn][x].walls["N"] is True:
+                for i in range(
+                    x * maze.cell_size, (x * maze.cell_size) + maze.cell_size
+                ):
+                    for j in range(2):
+                        image_addr.put_pixel_fast(i, y + j, color)
+    for x in range(0, maze.width):
+        if maze.cells[maze.height- 1][x].walls["S"] is True:
+            print(f"{maze.cells[maze.height- 1][x].walls['S']}")
+            for i in range(x * maze.cell_size, (x * maze.cell_size) + maze.cell_size):
+                for j in range(2):
+                    image_addr.put_pixel_fast(
+                        i, (maze.height * maze.cell_size) + j, color
+                    )
+    # draw column
+    for x in range(0, maze.width * maze.cell_size, maze.cell_size):
+        xn = int(x / maze.cell_size)
+        for y in range(0, maze.height):
+            if maze.cells[y][xn].walls["W"] is True:
+                for i in range(
+                    y * maze.cell_size, (y * maze.cell_size) + maze.cell_size
+                ):
+                    for j in range(2):
+                        image_addr.put_pixel_fast(x + j, i, color)
+    for y in range(0, maze.height):
+        if maze.cells[y][maze.width - 1].walls["E"] is True:
+            for i in range(y * maze.cell_size, (y * maze.cell_size) + maze.cell_size):
+                for j in range(2):
+                    image_addr.put_pixel_fast(
+                        (maze.width * maze.cell_size) + j, i, color
+                    )
+    startx = int((win_x_dimention - (imagex)) / 2)
+    starty = int((win_x_dimention - (imagey)) / 2)
+    mlx.put_image_to_window(window, img_ptr, startx, starty)
+    #mouse_img, w, h = mlx.load_file_to_image("mouse.xpm")
+    #cheese_img, w2, h2 = mlx.load_file_to_image("cheese.xpm")
+    #mlx.put_image_to_window(window, mouse_img, (maze.entry[0] * maze.cell_size)+( maze.cell_size+2), (maze.entry[1]*maze.cell_size)+( maze.cell_size+2))
+    #mlx.put_image_to_window(window, cheese_img, (maze.exit[0] * maze.cell_size)+( maze.cell_size+2), (maze.exit[1] * maze.cell_size)+( maze.cell_size+2))
 
 
-
-	mlx.put_image_to_window(window, image , 10, 10)
-	mlx.loop()
-
-animation()
+    mlx.loop()

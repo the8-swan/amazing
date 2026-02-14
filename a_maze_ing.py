@@ -24,7 +24,8 @@ def main():
                 data = config_validation.validation(content)
                 x, y = data["ENTRY"]
                 maze = Maze(data)
-                maze.dsf_algorith(x, y)
+                maze.my_42()
+                maze.dsf_algorith(0, 0)
                 # for col in range(25):
                 #     for row in range(25):
                 #         print(f"{maze.cells[col][row].is_visited}", end=" ")

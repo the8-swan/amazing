@@ -1,4 +1,5 @@
 import random
+from config_validation import ErrorInConfigFile
 
 
 class Maze:
@@ -13,7 +14,7 @@ class Maze:
         self.height = data["HEIGHT"]
         self.entry = data["ENTRY"]
         self.exit = data["EXIT"]
-        self.cell_size = 30
+        self.cell_size = self.calc_cell_size()
         # cells[row][col]
         self.cells = self.create_cells(self.width, self.height)
         
@@ -34,6 +35,38 @@ class Maze:
             cells.append(row_data)
         return cells
 
+    def calc_cell_size(self) -> int:
+        cell_size = 25
+        while(cell_size*self.width >= 800):
+            cell_size -= 1
+            if(cell_size == 0):
+                raise ErrorInConfigFile("cell_size <0")
+        while(cell_size*self.height >= 800):
+            cell_size -= 1
+            if(cell_size == 0):
+               raise ErrorInConfigFile("cell_size <0")
+        return cell_size
+
+    def my_42(self):
+        w = int(self.width / 2)
+        h = int(self.height / 2)
+        i = 0
+        while i < 8:
+            self.cells[(h + 2) - i][w - 2].is_visited = True
+            i += 1
+        i = 0
+        while i < 4:
+            self.cells[h][(w - 3) - i].is_visited = True
+            self.cells[(h - 2) + i][w - 4].is_visited = True
+            i += 1
+        self.cells[h - 1][w + 2].is_visited = True
+        self.cells[h + 1][w].is_visited = True
+        i = 0
+        while i < 6:
+            self.cells[h - 2][w + i].is_visited = True
+            self.cells[h + 2][w + i].is_visited = True
+            self.cells[h][w + i].is_visited = True
+            i += 1  boli
     # def dsf_algorith(self, x, y):
     #     self.cells[y][x].is_visited = True
     #     directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]
@@ -62,18 +95,38 @@ class Maze:
     #                     return True
     #         i += 1
     #     return False
-    def dsf_algorith(self,x, y):
-       self.cells[y][x].is_visited = True
-       
-       key = list(self.direction.keys())
-       random.shuffle(key)
-       i = 0
-       while i < 4:
-           n_x, n_y, d_dir, n_dir = self.direction[key[i]]
-           m_x, m_y  = x + n_x, y + n_y
-           if 0 <= m_x < self.width and 0 <= m_y < self.height:
-               if not self.cells[m_y][m_x].is_visited:
-                   self.cells[y][x].walls[d_dir] = False
-                   self.cells[m_y][m_x].walls[n_dir] = False
-                   self.dsf_algorith(m_x, m_y)
-           i += 1 
+    def dsf_algorith(self, x, y):
+        """Iterative depth-first search to avoid recursion limit."""
+        # Use a stack instead of recursion
+        stack = [(x, y)]
+
+        while stack:
+            x, y = stack[-1]  # Peek at top of stack
+            self.cells[y][x].is_visited = True
+
+            # Get shuffled directions
+            key = list(self.direction.keys())
+            random.shuffle(key)
+
+            # Try to find an unvisited neighbor
+            found_unvisited = False
+
+            for direction in key:
+                n_x, n_y, d_dir, n_dir = self.direction[direction]
+                m_x, m_y = x + n_x, y + n_y
+
+                # Check bounds and if unvisited
+                if 0 <= m_x < self.width and 0 <= m_y < self.height:
+                    if not self.cells[m_y][m_x].is_visited:
+                        # Remove walls
+                        self.cells[y][x].walls[d_dir] = False
+                        self.cells[m_y][m_x].walls[n_dir] = False
+
+                        # Push new cell onto stack
+                        stack.append((m_x, m_y))
+                        found_unvisited = True
+                        break  # Continue DFS from this neighbor
+
+            # If no unvisited neighbors, backtrack
+            if not found_unvisited:
+                stack.pop()
