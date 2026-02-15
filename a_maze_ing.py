@@ -26,10 +26,6 @@ def main():
                 maze = Maze(data)
                 maze.my_42()
                 maze.dsf_algorith(0, 0)
-                # for col in range(25):
-                #     for row in range(25):
-                #         print(f"{maze.cells[col][row].is_visited}", end=" ")
-                #     print("")
                 maze_renderer.maze_draw(maze)
         except (FileNotFoundError, config_validation.ErrorInConfigFile) as e:
             print(e)

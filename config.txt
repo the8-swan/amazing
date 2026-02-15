@@ -1,5 +1,4 @@
     WIDTH       = 50
-#hillw  
 HEIGHT= 50
 ENTRY=0,0     
     EXIT    =   13,13        

@@ -1,5 +1,8 @@
 import mlx
-from font import font
+from interface import font
+from interface import buttons
+from interface import colors
+import random
 
 
 class img_data:
@@ -54,7 +57,7 @@ def clear_image(params):
     height = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
     for i in range(height):
         for j in range(width):
-            params.image.put_pixel_fast(j, i, 0x9A9084)
+            params.image.put_pixel_fast(j, i, colors[0]["background"])
 
 
 def upade_image_maze(params):
@@ -123,14 +126,11 @@ def upade_image_maze(params):
     )
     params.currentx += 1
     params.currenty += 1
-    # if params.currentx > params.maze.width:
-    #     params.currenty += 1
-    #     params.currentx = 0
 
 
 def buttons_section(mlx_p, mlx_ptr, image_btn, img_btn_ptr):
     start = 225
-    texts = ["regenerate maze", "show hide path", "change color"]
+    texts = ["regenerate maze", "show or hide path", "change color"]
 
     def draw_text(text, button_top):
         text = text.upper()
@@ -155,14 +155,14 @@ def buttons_section(mlx_p, mlx_ptr, image_btn, img_btn_ptr):
 
             for y in range(5):
                 for x in range(5):
-                    if l_font[y][x] == 'X':
+                    if l_font[y][x] == "X":
                         for dy in range(scale):
                             for dx in range(scale):
                                 for t in range(thickness):
                                     image_btn.put_pixel_fast(
                                         startx + x * scale + dx + t,
                                         starty + y * scale + dy,
-                                        0xFFFFFF
+                                        0xFFFFFF,
                                     )
 
             startx += letter_spacing
@@ -170,13 +170,37 @@ def buttons_section(mlx_p, mlx_ptr, image_btn, img_btn_ptr):
     for text in texts:
         for y in range(start, start + 70):
             for x in range(70, 70 + 260):
-                image_btn.put_pixel_fast(x, y, 0x3E3732)
+                image_btn.put_pixel_fast(x, y, colors[2]["button_bg"])
 
         draw_text(text, start)
         start += 110
 
     mlx_p.mlx_put_image_to_window(mlx_ptr, mlx_ptr, img_btn_ptr, 800, 0)
 
+
+def clicked_button(button: int, x: int, y: int, params: MazeAnimation):
+    i = 0
+    while i < 3:
+        if x >= buttons[i]["start_x"] and x <= buttons[i]["end_x"]:
+            if y >= buttons[i]["start_y"] and y <= buttons[i]["end_y"]:
+                if buttons[i]["text"] == "regenerate maze":
+                    params.image.set_color_to_image(800, 800, colors[0]["background"])
+                    params.maze.reset_maze()
+                    params.maze.my_42()
+                    params.maze.dsf_algorith(0, 0)
+                    params.currentx = 0
+                    params.currenty = 0
+                    params.is_animating = True
+                    break
+                elif buttons[i]["text"] == "change color":
+                    params.image.set_color_to_image(800, 800, colors[0]["background"])
+                    params.color = random.choice(colors[4]["wall_colors"])
+                    params.currentx = 0
+                    params.currenty = 0
+                    params.is_animating = True
+                    break
+
+        i += 1
 
 
 def maze_draw(maze):
@@ -193,16 +217,19 @@ def maze_draw(maze):
     image = img_data(addr, bpp, size_line, endian)
     image_btn = img_data(addr_btn, bpp_btn, size_line_btn, endian_btn)
 
-    image.set_color_to_image(800, 800, 0x1C1816)
-    image_btn.set_color_to_image(800, 400, 0x1C1816)
+    image.set_color_to_image(800, 800, colors[0]["background"])
+    image_btn.set_color_to_image(800, 400, colors[0]["background"])
 
     def destroy_win(param):
         mlx_p.mlx_destroy_window(mlx_ptr, window)
         mlx_p.mlx_loop_exit(mlx_ptr)
 
-    params = MazeAnimation(mlx_p, mlx_ptr, maze, image, img_maze_ptr, window, 0xFFFFFF)
-    mlx_p.mlx_loop_hook(mlx_ptr, upade_image_maze, params)
+    params = MazeAnimation(
+        mlx_p, mlx_ptr, maze, image, img_maze_ptr, window, colors[3]["base_wall_color"]
+    )
     buttons_section(mlx_p, mlx_ptr, image_btn, img_btn_ptr)
+    mlx_p.mlx_loop_hook(params.mlx_ptr, upade_image_maze, params)
     mlx_p.mlx_put_image_to_window(mlx_ptr, window, img_btn_ptr, 800, 0)
+    mlx_p.mlx_mouse_hook(window, clicked_button, params)
     mlx_p.mlx_hook(window, 33, 0, destroy_win, None)
     mlx_p.mlx_loop(mlx_ptr)

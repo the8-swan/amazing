@@ -103,3 +103,9 @@ class Maze:
             # If no unvisited neighbors, backtrack
             if not found_unvisited:
                 stack.pop()
+
+    def reset_maze(self):
+        for row in self.cells:
+            for cell in row:
+                cell.is_visited = False
+                cell.walls = {"S": True, "N": True, "W": True, "E": True}
