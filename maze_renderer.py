@@ -69,35 +69,37 @@ def upade_image_maze(params):
     entryx, entryy = params.maze.entry
     exitx, exity = params.maze.exit
 
-    for y in range(
-        starty,
-        (params.maze.height * params.maze.cell_size) + starty,
-        params.maze.cell_size,
-    ):
-        yn = int((y - starty) / params.maze.cell_size)
-        for x in range(0, params.currentx):
-            if params.maze.cells[yn][x].walls["N"] is True:
-                for i in range(
-                    startx + (x * params.maze.cell_size),
-                    startx + (x * params.maze.cell_size) + params.maze.cell_size,
-                ):
-                    for j in range(params.maze.wall_size):
-                        params.image.put_pixel_fast(i, y + j, params.color)
-    # # draw column
-    for x in range(
-        startx,
-        (params.maze.width * params.maze.cell_size) + startx,
-        params.maze.cell_size,
-    ):
-        xn = int((x - startx) / params.maze.cell_size)
-        for y in range(0, params.currenty):
-            if params.maze.cells[y][xn].walls["W"] is True:
-                for i in range(
-                    starty + (y * params.maze.cell_size),
-                    (y * params.maze.cell_size) + starty + params.maze.cell_size,
-                ):
-                    for j in range(params.maze.wall_size):
-                        params.image.put_pixel_fast(x + j, i, params.color)
+    if params.currenty <= params.maze.height:
+        for y in range(
+            starty,
+            (params.maze.height * params.maze.cell_size) + starty,
+            params.maze.cell_size,
+        ):
+            yn = int((y - starty) / params.maze.cell_size)
+            for x in range(0, params.currentx):
+                if params.maze.cells[yn][x].walls["N"] is True:
+                    for i in range(
+                        startx + (x * params.maze.cell_size),
+                        startx + (x * params.maze.cell_size) + params.maze.cell_size,
+                    ):
+                        for j in range(params.maze.wall_size):
+                            params.image.put_pixel_fast(i, y + j, params.color)
+        # # draw column
+    if params.currentx <= params.maze.width:
+        for x in range(
+            startx,
+            (params.maze.width * params.maze.cell_size) + startx,
+            params.maze.cell_size,
+        ):
+            xn = int((x - startx) / params.maze.cell_size)
+            for y in range(0, params.currenty):
+                if params.maze.cells[y][xn].walls["W"] is True:
+                    for i in range(
+                        starty + (y * params.maze.cell_size),
+                        (y * params.maze.cell_size) + starty + params.maze.cell_size,
+                    ):
+                        for j in range(params.maze.wall_size):
+                            params.image.put_pixel_fast(x + j, i, params.color)
 
     if params.currentx >= params.maze.width and params.currenty >= params.maze.height:
         for y in range(0, params.maze.height):
@@ -145,8 +147,10 @@ def upade_image_maze(params):
     params.mlx.mlx_put_image_to_window(
         params.mlx_ptr, params.window, params.img_maze_ptr, 0, 0
     )
-    params.currentx += 1
-    params.currenty += 1
+    if params.currentx < params.maze.width:
+        params.currentx += 1
+    if params.currenty < params.maze.height:
+        params.currenty += 1
 
 
 def buttons_section(mlx_p, mlx_ptr, image_btn, img_btn_ptr):
