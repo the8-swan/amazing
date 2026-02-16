@@ -58,15 +58,25 @@ class Maze:
         if self.cell_size <= 10:
             cells = 6
         w = int(self.width / 2)
-        h = int((self.height / 2) - (cells / 2))
-        for i in range(1, 4 * cells):
+        h = int(self.height / 2)
+        start = 1 if int(cells/2) == 0 else int(cells/2)
+        for i in range(start, 4*cells):
             for j in range(cells):
-                self.cells[h + j][w - i].is_visited = "True"
-                self.cells[h + j][w + i].is_visited = "True"
-        for i in range(1, cells):
-            for j in range(1, 4 * cells):
-                self.cells[(h + cells) + j][w - i].is_visited = "True"
-                self.cells[(h + cells) + j][w + i].is_visited = "True"
+                self.cells[h+j][w+i].is_visited = True
+                self.cells[h+j][w-i].is_visited = True
+                self.cells[h-(3 * cells)+j][w+i].is_visited = True
+                self.cells[h+(3 * cells)+j][w+i].is_visited = True
+
+        for i in range(0, 4*cells):
+            for j in range(1, cells+1):
+                self.cells[h+i][w+j].is_visited = True
+                self.cells[h+i][w-j].is_visited = True
+                self.cells[h-(3*cells)+i][w+(3*cells)+j].is_visited = True
+                self.cells[h-(3*cells)+i][w-(3*cells)-j].is_visited = True
+
+        for i in range(cells):
+            for j in range(1, 1+cells):
+                self.cells[h-i][w-j].is_visited = True
 
     def dsf_algorith(self, x, y):
         """Iterative depth-first search to avoid recursion limit."""
