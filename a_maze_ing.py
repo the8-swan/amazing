@@ -22,7 +22,6 @@ def main():
             with open(sys.argv[1], "r") as file:
                 content = file.read()
                 data = config_validation.validation(content)
-                x, y = data["ENTRY"]
                 maze = Maze(data)
                 maze.my_42()
                 maze.dsf_algorith(0, 0)

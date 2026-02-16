@@ -1,3 +1,4 @@
+from collections import deque
 import random
 from config_validation import ErrorInConfigFile
 
@@ -59,24 +60,24 @@ class Maze:
             cells = 6
         w = int(self.width / 2)
         h = int(self.height / 2)
-        start = 1 if int(cells/2) == 0 else int(cells/2)
-        for i in range(start, 4*cells):
+        start = 1 if int(cells / 2) == 0 else int(cells / 2)
+        for i in range(start, 4 * cells):
             for j in range(cells):
-                self.cells[h+j][w+i].is_visited = True
-                self.cells[h+j][w-i].is_visited = True
-                self.cells[h-(3 * cells)+j][w+i].is_visited = True
-                self.cells[h+(3 * cells)+j][w+i].is_visited = True
+                self.cells[h + j][w + i].is_visited = True
+                self.cells[h + j][w - i].is_visited = True
+                self.cells[h - (3 * cells) + j][w + i].is_visited = True
+                self.cells[h + (3 * cells) + j][w + i].is_visited = True
 
-        for i in range(0, 4*cells):
-            for j in range(1, cells+1):
-                self.cells[h+i][w+j].is_visited = True
-                self.cells[h+i][w-j].is_visited = True
-                self.cells[h-(3*cells)+i][w+(3*cells)+j].is_visited = True
-                self.cells[h-(3*cells)+i][w-(3*cells)-j].is_visited = True
+        for i in range(0, 4 * cells):
+            for j in range(1, cells + 1):
+                self.cells[h + i][w + j].is_visited = True
+                self.cells[h + i][w - j].is_visited = True
+                self.cells[h - (3 * cells) + i][w + (3 * cells) + j].is_visited = True
+                self.cells[h - (3 * cells) + i][w - (3 * cells) - j].is_visited = True
 
         for i in range(cells):
-            for j in range(1, 1+cells):
-                self.cells[h-i][w-j].is_visited = True
+            for j in range(1, 1 + cells):
+                self.cells[h - i][w - j].is_visited = True
 
     def dsf_algorith(self, x, y):
         """Iterative depth-first search to avoid recursion limit."""
@@ -119,3 +120,58 @@ class Maze:
             for cell in row:
                 cell.is_visited = False
                 cell.walls = {"S": True, "N": True, "W": True, "E": True}
+
+    def bfs_algo(self):
+        for r in range(len(self.cells)):
+            for c in range(len(self.cells[0])):
+                self.cells[r][c].is_visited = False
+
+        x, y = self.m_entry
+        d_x, d_y = self.m_exit
+
+        queue = []
+        queue.append((x, y))
+        data = deque()
+        self.cells[y][x].is_visited = True
+
+        parent = {}
+
+        while queue:
+            x, y = queue.pop(0)
+
+            if x == d_x and y == d_y:
+                break
+
+            key = list(self.direction.keys())
+
+            i = 0
+            while i < 4:
+                n_x, n_y, m_dir, n_dir = self.direction[key[i]]
+                m_x, m_y = x + n_x, y + n_y
+
+                if 0 <= m_x < self.width and 0 <= m_y < self.height:
+                    if (
+                        not self.cells[y][x].walls[m_dir]
+                        and not self.cells[m_y][m_x].walls[n_dir]
+                        and not self.cells[m_y][m_x].is_visited
+                    ):
+                        self.cells[m_y][m_x].is_visited = True
+                        parent[(m_x, m_y)] = ((x, y), m_dir)
+                        queue.append((m_x, m_y))
+
+                i += 1
+
+        cur = (d_x, d_y)
+        while cur != self.m_entry:
+            (m_x, m_y), d = parent[cur]
+            if (m_x, m_y) != self.m_entry:
+                data.appendleft((m_x, m_y))
+            x, y = cur
+            self.cells[y][x].path = True
+            cur = (m_x, m_y)
+            self.dirs.append(d)
+
+        x, y = self.m_entry
+        self.cells[y][x].path = True
+        self.dirs.reverse()
+        return data

@@ -64,110 +64,23 @@ buttons = [
 ]
 
 colors = [
-    {"background": 0x0f0f0f},      # Almost black
-    {"walls": 0xe5e5e5},           # Light gray
-    {"button_bg": 0x2a2a2a},       # Dark gray
-    {"base_wall_color": 0x00ff00}, # White
+    {"background": 0x0F0F0F},  # Almost black
+    {"entry": 0x0080FF},  # Light gray
+    {"button_bg": 0x2A2A2A},  # Dark gray
+    {"base_wall_color": 0x00FF00},  # White
     {
         "wall_colors": [
-          0x00ff00,  # 1. Neon green (Matrix style)
-          0xff00ff,  # 2. Magenta (electric)
-          0x00ffff,  # 3. Cyan (bright aqua)
-          0xff1493,  # 4. Deep pink (hot!)
-          0xffff00,  # 5. Yellow (super bright)
-          0xff4500,  # 6. Orange red (fiery)
-          0x7fff00,  # 7. Chartreuse (lime punch)
-          0x00e5ff,  # 8. Bright cyan (laser blue)
-          0xb537f2,  # 9. Electric purple
-          0xff6600,  # 10. Bright orange (sunset)
-    ]
-    },
-]
-
-"""
-
-# Warm sunset theme
-colors = [
-    {"background": 0x2b1b17},      # Dark brown
-    {"walls": 0xff6b35},           # Orange
-    {"button_bg": 0x4a2c2a},       # Dark burgundy
-    {"base_wall_color": 0xffeaa7}, # Light yellow
-    {
-        "wall_colors": [
-            0xff6b35,  # Orange
-            0xf7b731,  # Yellow
-            0xee5a6f,  # Pink
-            0xc44569,  # Rose
-            0xf8b500,  # Gold
+            0x00FF00,  # 1. Neon green (Matrix style)
+            0xFF00FF,  # 2. Magenta (electric)
+            0x00FFFF,  # 3. Cyan (bright aqua)
+            0xFF1493,  # 4. Deep pink (hot!)
+            0xFFFF00,  # 5. Yellow (super bright)
+            0xFF4500,  # 6. Orange red (fiery)
+            0x7FFF00,  # 7. Chartreuse (lime punch)
+            0x00E5FF,  # 8. Bright cyan (laser blue)
+            0xB537F2,  # 9. Electric purple
+            0xFF6600,  # 10. Bright orange (sunset)
         ]
     },
+    {"exit": 0xFF0033},
 ]
-
-# Forest/nature theme
-colors = [
-    {"background": 0x1b2e23},      # Dark forest green
-    {"walls": 0x52796f},           # Sage green
-    {"button_bg": 0x2f3e46},       # Dark teal
-    {"base_wall_color": 0xcad2c5}, # Light sage
-    {
-        "wall_colors": [
-            0x52796f,  # Sage
-            0x84a98c,  # Light green
-            0x6b9080,  # Teal green
-            0xa7c957,  # Lime
-            0x588157,  # Forest green
-        ]
-    },
-]
-
-# Purple/pink aesthetic
-colors = [
-    {"background": 0x2d1b3d},      # Deep purple
-    {"walls": 0x8e44ad},           # Purple
-    {"button_bg": 0x512b58},       # Dark purple
-    {"base_wall_color": 0xe8daef}, # Light lavender
-    {
-        "wall_colors": [
-            0x8e44ad,  # Purple
-            0xe056fd,  # Bright purple
-            0xbe29ec,  # Magenta
-            0xff6bcb,  # Pink
-            0xc471ed,  # Lavender
-        ]
-    },
-]
-
-# Retro/vaporwave theme
-colors = [
-    {"background": 0x120136},      # Deep purple-black
-    {"walls": 0xff71ce},           # Hot pink
-    {"button_bg": 0x2e0249},       # Dark purple
-    {"base_wall_color": 0xb967ff}, # Light purple
-    {
-        "wall_colors": [
-            0xff71ce,  # Hot pink
-            0x01cdfe,  # Cyan
-            0xb967ff,  # Purple
-            0x05ffa1,  # Mint
-            0xfffb96,  # Pale yellow
-        ]
-    },
-]
-
-# Minimalist grayscale
-colors = [
-    {"background": 0x0f0f0f},      # Almost black
-    {"walls": 0xe5e5e5},           # Light gray
-    {"button_bg": 0x2a2a2a},       # Dark gray
-    {"base_wall_color": 0xffffff}, # White
-    {
-        "wall_colors": [
-            0xffffff,  # White
-            0xe5e5e5,  # Light gray
-            0xb3b3b3,  # Medium gray
-            0x808080,  # Gray
-            0x4d4d4d,  # Dark gray
-        ]
-    },
-]
-"""

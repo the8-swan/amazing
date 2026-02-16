@@ -66,6 +66,9 @@ def upade_image_maze(params):
     clear_image(params)
     startx = int((800 - (params.maze.width * params.maze.cell_size)) / 2)
     starty = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
+    entryx, entryy = params.maze.entry
+    exitx, exity = params.maze.exit
+
     for y in range(
         starty,
         (params.maze.height * params.maze.cell_size) + starty,
@@ -120,6 +123,24 @@ def upade_image_maze(params):
                         starty + (params.maze.height * params.maze.cell_size) + j,
                         params.color,
                     )
+        for eny in range(
+            starty + (entryy * params.maze.cell_size),
+            starty + ((entryy + 1) * params.maze.cell_size),
+        ):
+            for enx in range(
+                startx + (entryx * params.maze.cell_size),
+                startx + ((entryx + 1) * params.maze.cell_size),
+            ):
+                params.image.put_pixel_fast(enx, eny, colors[1]["entry"])
+        for eny in range(
+            starty + (exity * params.maze.cell_size),
+            starty + ((exity + 1) * params.maze.cell_size),
+        ):
+            for enx in range(
+                startx + (exitx * params.maze.cell_size),
+                startx + ((exitx + 1) * params.maze.cell_size),
+            ):
+                params.image.put_pixel_fast(enx, eny, colors[5]["exit"])
         params.is_animating = False
     params.mlx.mlx_put_image_to_window(
         params.mlx_ptr, params.window, params.img_maze_ptr, 0, 0
