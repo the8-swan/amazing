@@ -83,4 +83,5 @@ colors = [
         ]
     },
     {"exit": 0xFF0033},
+    {"path_color": 0xFFFFFF},
 ]

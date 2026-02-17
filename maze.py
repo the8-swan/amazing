@@ -18,6 +18,9 @@ class Maze:
         self.exit = data["EXIT"]
         self.cell_size = self.calc_cell_size()
         self.wall_size = self.celc_wall_size()
+        self.path = []
+        self.is_path_draw = False
+        self.dirs = []
         # cells[row][col]
         self.cells = self.create_cells(self.width, self.height)
 
@@ -126,8 +129,8 @@ class Maze:
             for c in range(len(self.cells[0])):
                 self.cells[r][c].is_visited = False
 
-        x, y = self.m_entry
-        d_x, d_y = self.m_exit
+        x, y = self.entry
+        d_x, d_y = self.exit
 
         queue = []
         queue.append((x, y))
@@ -162,16 +165,16 @@ class Maze:
                 i += 1
 
         cur = (d_x, d_y)
-        while cur != self.m_entry:
+        while cur != self.entry:
             (m_x, m_y), d = parent[cur]
-            if (m_x, m_y) != self.m_entry:
+            if (m_x, m_y) != self.entry:
                 data.appendleft((m_x, m_y))
             x, y = cur
             self.cells[y][x].path = True
             cur = (m_x, m_y)
             self.dirs.append(d)
 
-        x, y = self.m_entry
+        x, y = self.entry
         self.cells[y][x].path = True
         self.dirs.reverse()
-        return data
+        self.path = data

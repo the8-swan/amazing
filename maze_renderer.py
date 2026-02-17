@@ -55,15 +55,14 @@ class MazeAnimation:
 def clear_image(params):
     width = int((800 - (params.maze.width * params.maze.cell_size)) / 2)
     height = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
-    for i in range(height):
-        for j in range(width):
+    for i in range(height+(params.maze.cell_size*params.maze.height)):
+        for j in range(width+(params.maze.cell_size*params.maze.width)):
             params.image.put_pixel_fast(j, i, colors[0]["background"])
 
 
-def upade_image_maze(params):
+def upade_image_maze(params: MazeAnimation):
     if params.is_animating is False:
         return 0
-    clear_image(params)
     startx = int((800 - (params.maze.width * params.maze.cell_size)) / 2)
     starty = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
     entryx, entryy = params.maze.entry
@@ -143,6 +142,8 @@ def upade_image_maze(params):
                 startx + ((exitx + 1) * params.maze.cell_size),
             ):
                 params.image.put_pixel_fast(enx, eny, colors[5]["exit"])
+        params.maze.bfs_algo()
+        path_draw(params)
         params.is_animating = False
     params.mlx.mlx_put_image_to_window(
         params.mlx_ptr, params.window, params.img_maze_ptr, 0, 0
@@ -151,6 +152,89 @@ def upade_image_maze(params):
         params.currentx += 1
     if params.currenty < params.maze.height:
         params.currenty += 1
+
+
+def draw_maze_without_animation(params):
+    clear_image(params)
+    startx = int((800 - (params.maze.width * params.maze.cell_size)) / 2)
+    starty = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
+    entryx, entryy = params.maze.entry
+    exitx, exity = params.maze.exit
+
+    for y in range(
+        starty,
+        (params.maze.height * params.maze.cell_size) + starty,
+        params.maze.cell_size,
+    ):
+        yn = int((y - starty) / params.maze.cell_size)
+        for x in range(0, params.maze.width):
+            if params.maze.cells[yn][x].walls["N"] is True:
+                for i in range(
+                    startx + (x * params.maze.cell_size),
+                    startx + (x * params.maze.cell_size) + params.maze.cell_size,
+                ):
+                    for j in range(params.maze.wall_size):
+                        params.image.put_pixel_fast(i, y + j, params.color)
+        # # draw column
+    for x in range(
+        startx,
+        (params.maze.width * params.maze.cell_size) + startx,
+        params.maze.cell_size,
+    ):
+        xn = int((x - startx) / params.maze.cell_size)
+        for y in range(0, params.maze.height):
+            if params.maze.cells[y][xn].walls["W"] is True:
+                for i in range(
+                    starty + (y * params.maze.cell_size),
+                    (y * params.maze.cell_size) + starty + params.maze.cell_size,
+                ):
+                    for j in range(params.maze.wall_size):
+                        params.image.put_pixel_fast(x + j, i, params.color)
+
+    for y in range(0, params.maze.height):
+        if params.maze.cells[y][params.maze.width - 1].walls["E"] is True:
+            for i in range(
+                starty + (y * params.maze.cell_size),
+                (y * params.maze.cell_size) + starty + params.maze.cell_size,
+            ):
+                for j in range(params.maze.wall_size):
+                    params.image.put_pixel_fast(
+                        startx + (params.maze.width * params.maze.cell_size) + j,
+                        i,
+                        params.color,
+                    )
+    for x in range(0, params.maze.width):
+        for i in range(
+            startx + (x * params.maze.cell_size),
+            startx + (x * params.maze.cell_size) + params.maze.cell_size,
+        ):
+            for j in range(params.maze.wall_size):
+                params.image.put_pixel_fast(
+                    i,
+                    starty + (params.maze.height * params.maze.cell_size) + j,
+                    params.color,
+                )
+    for eny in range(
+        starty + (entryy * params.maze.cell_size),
+        starty + ((entryy + 1) * params.maze.cell_size),
+    ):
+        for enx in range(
+            startx + (entryx * params.maze.cell_size),
+            startx + ((entryx + 1) * params.maze.cell_size),
+        ):
+            params.image.put_pixel_fast(enx, eny, colors[1]["entry"])
+    for eny in range(
+        starty + (exity * params.maze.cell_size),
+        starty + ((exity + 1) * params.maze.cell_size),
+    ):
+        for enx in range(
+            startx + (exitx * params.maze.cell_size),
+            startx + ((exitx + 1) * params.maze.cell_size),
+        ):
+            params.image.put_pixel_fast(enx, eny, colors[5]["exit"])
+    params.mlx.mlx_put_image_to_window(
+        params.mlx_ptr, params.window, params.img_maze_ptr, 0, 0
+    )
 
 
 def buttons_section(mlx_p, mlx_ptr, image_btn, img_btn_ptr):
@@ -224,8 +308,58 @@ def clicked_button(button: int, x: int, y: int, params: MazeAnimation):
                     params.currenty = 0
                     params.is_animating = True
                     break
+                elif buttons[i]["text"] == "show or hide path":
+                    if params.maze.is_path_draw is True:
+                        draw_maze_without_animation(params)
+                        params.maze.is_path_draw = False
+                    else:
+                        path_draw(params)
+                        params.maze.is_path_draw = True
 
         i += 1
+
+
+def clear_path(params: MazeAnimation):
+    startx = int((800 - (params.maze.width * params.maze.cell_size)) / 2)
+    starty = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
+    border = 0
+    color = colors[0]["background"]
+    for data in params.maze.path:
+        x, y = data
+
+        cell_left = startx + (x * params.maze.cell_size) + border
+        cell_top = starty + (y * params.maze.cell_size) + border
+        cell_right = startx + ((x + 1) * params.maze.cell_size) - border
+        cell_bottom = starty + ((y + 1) * params.maze.cell_size) - border
+
+        for py in range(cell_top, cell_bottom):
+            for px in range(cell_left, cell_right):
+                params.image.put_pixel_fast(px, py, color)
+    params.mlx.mlx_put_image_to_window(
+        params.mlx_ptr, params.window, params.img_maze_ptr, 0, 0
+    )
+
+
+def path_draw(params: MazeAnimation):
+    params.maze.is_path_draw = True
+    startx = int((800 - (params.maze.width * params.maze.cell_size)) / 2)
+    starty = int((800 - (params.maze.height * params.maze.cell_size)) / 2)
+    border = params.maze.wall_size * 2
+    color = colors[6]["path_color"]
+    for data in params.maze.path:
+        x, y = data
+
+        cell_left = startx + (x * params.maze.cell_size) + border
+        cell_top = starty + (y * params.maze.cell_size) + border
+        cell_right = startx + ((x + 1) * params.maze.cell_size) - border
+        cell_bottom = starty + ((y + 1) * params.maze.cell_size) - border
+
+        for py in range(cell_top, cell_bottom):
+            for px in range(cell_left, cell_right):
+                params.image.put_pixel_fast(px, py, color)
+    params.mlx.mlx_put_image_to_window(
+        params.mlx_ptr, params.window, params.img_maze_ptr, 0, 0
+    )
 
 
 def maze_draw(maze):
